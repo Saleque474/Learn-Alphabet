@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:kplayer/kplayer.dart';
 import 'package:learn_alphabet/constants.dart';
 
 void main() {
+  Player.boot();
   runApp(const LearnAlphabetApp());
 }
 
@@ -45,19 +47,30 @@ class _HomeState extends State<Home> {
               decoration:
                   BoxDecoration(borderRadius: BorderRadius.circular(15)),
               child: Wrap(
-                children: [
-                  ...alphabets
-                      .map(
-                        (e) => textHolder(e),
-                      )
-                      .toList()
-                ],
+                children: changePos(),
               ),
             ),
           ],
         );
       }),
     );
+  }
+
+  playAudio(String path) {
+    Player.asset(path).play();
+  }
+
+  List<Widget> changePos() {
+    List<Widget> children = [
+      ...alphabets
+          .map(
+            (e) => textHolder(e),
+          )
+          .toList()
+    ];
+    children.shuffle();
+
+    return children;
   }
 
   Widget wordHolder(double height, double width) {
@@ -94,6 +107,7 @@ class _HomeState extends State<Home> {
       child: ElevatedButton(
         onPressed: () {
           currentAlphabet = alphabet;
+          playAudio("assets/audio/$alphabet.wav");
           setState(() {});
         },
         child: Text(alphabet),
